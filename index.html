@@ -1,152 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthiva | Advanced Health Assistant</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        :root { --brand-cyan: #06b6d4; --bg-dark: #050505; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #e5e7eb; overflow-x: hidden; margin: 0; padding: 0; scroll-behavior: smooth; }
-        .glow { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%); border-radius: 50%; filter: blur(100px); z-index: -1; pointer-events: none; }
-        .glass { background: rgba(15, 15, 15, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .text-gradient { background: linear-gradient(135deg, #fff 30%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hidden-view { display: none !important; }
-        .prose { font-size: 0.875rem; line-height: 1.6; }
-        .prose h3 { font-size: 1rem; font-weight: 700; color: var(--brand-cyan); margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; }
-        .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        .chat-bubble-user { background: #0891b2; color: white; }
-    </style>
-</head>
-<body class="selection:bg-cyan-500/30">
+<script type="module">
+    // Your provided key
+    const API_KEY = "AIzaSyDgDRMHPd2Em3owqQ9jbZX5a8CQScSX8fI"; 
 
-    <div id="landing-view">
-        <div class="glow top-[-20%] right-[-10%]"></div>
-        <nav class="flex items-center justify-between px-6 md:px-12 py-8 sticky top-0 z-50 bg-[#050505]/80 backdrop-blur-lg border-b border-white/5">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20">
-                    <i data-lucide="heart-pulse" class="w-6 h-6 text-cyan-400"></i>
-                </div>
-                <span class="text-2xl font-bold tracking-tighter italic text-white">Healthiva<span class="text-cyan-500">.</span></span>
-            </div>
-            <button onclick="startApp()" class="px-6 py-2.5 bg-white text-black text-sm font-bold rounded-full hover:scale-105 transition-all">Launch App</button>
-        </nav>
-
-        <section class="max-w-7xl mx-auto px-6 pt-24 pb-32 text-center">
-            <h1 class="text-6xl md:text-9xl font-extrabold tracking-tighter mb-8 text-gradient leading-[0.9]">Health advice <br> made simple.</h1>
-            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Intelligent medical guidance, home remedies, and precautions at your fingertips.</p>
-            <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 text-white font-bold rounded-2xl shadow-2xl mx-auto flex items-center gap-3">
-                Start Consultation <i data-lucide="arrow-right"></i>
-            </button>
-        </section>
-    </div>
-
-    <div id="app-view" class="hidden-view flex h-screen bg-[#050505] overflow-hidden">
-        <aside class="w-80 bg-[#0a0a0a] border-r border-white/5 flex flex-col z-30">
-            <div class="p-6 flex-1 overflow-y-auto space-y-8">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-                    <i data-lucide="heart-pulse" class="text-cyan-400 w-6 h-6"></i>
-                    <h1 class="text-xl font-bold text-white italic">Healthiva</h1>
-                </div>
-                <div class="space-y-6">
-                    <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500/60 block">Medical History</label>
-                    <textarea id="medical-history" placeholder="Allergies, conditions..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50"></textarea>
-                </div>
-            </div>
-            <div class="p-6 border-t border-white/5">
-                <button onclick="location.reload()" class="w-full p-3.5 text-xs text-gray-500 bg-white/5 rounded-xl">New Session</button>
-            </div>
-        </aside>
-
-        <main class="flex-1 flex flex-col">
-            <header class="h-16 border-b border-white/5 flex items-center px-6">
-                <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">System Active</span>
-            </header>
-            <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-10"></div>
-            <div class="p-4 md:p-8">
-                <div class="max-w-4xl mx-auto relative">
-                    <form id="chat-form" class="glass rounded-3xl p-3 flex items-end gap-2">
-                        <textarea id="user-input" rows="1" placeholder="Describe how you feel..." class="flex-1 bg-transparent border-none text-sm py-4 text-white resize-none focus:ring-0"></textarea>
-                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl"><i data-lucide="send"></i></button>
-                    </form>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script type="module">
-        // Updated with your new API key
-        const API_KEY = "AIzaSyDgDRMHPd2Em3owqQ9jbZX5a8CQScSX8fI"; 
-        let messages = [{ role: 'assistant', text: 'Hello! I am Healthiva. Please describe your symptoms or share a medical concern.' }];
-
-        window.startApp = () => {
-            document.getElementById('landing-view').classList.add('hidden-view');
-            document.getElementById('app-view').classList.remove('hidden-view');
-            renderMessages();
-            lucide.createIcons();
+    async function fetchAI(prompt) {
+        const history = document.getElementById('medical-history').value;
+        const payload = {
+            contents: [{ parts: [{ text: `System: Healthiva Medical Assistant. History: ${history}. Query: ${prompt}` }] }]
         };
 
-        window.renderMessages = () => {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = messages.map(m => `
-                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-                    <div class="max-w-[85%] p-4 rounded-3xl ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300'}">
-                        <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
-                    </div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        };
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-        async function tryFetch(url, payload) {
+        try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            return await response.json();
-        }
 
-        document.getElementById('chat-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('user-input');
-            const val = input.value.trim();
-            if(!val) return;
+            const data = await response.json();
 
-            messages.push({ role: 'user', text: val });
-            input.value = ''; renderMessages();
-            document.getElementById('status-text').innerText = "Analyzing Symptoms...";
-
-            const payload = {
-                contents: [{ parts: [{ text: `You are Healthiva, a helpful medical assistant. History: ${document.getElementById('medical-history').value}. Query: ${val}` }] }]
-            };
-
-            try {
-                // Multi-version attempt to bypass "Not Found" errors
-                let data = await tryFetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, payload);
-                
-                if (data.error) {
-                    data = await tryFetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, payload);
-                }
-
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
-                } else {
-                    throw new Error("No response content");
-                }
-            } catch (err) {
-                messages.push({ role: 'assistant', text: "⚠️ **Service Error:** Google is currently unable to process this request. Please check if your API key has 'Generative Language API' enabled in Google Cloud Console." });
+            if (!response.ok) {
+                // This will tell us the EXACT reason (e.g., PERMISSION_DENIED)
+                throw new Error(`Google API Error (${response.status}): ${data.error ? data.error.message : 'Unknown'}`);
             }
 
-            document.getElementById('status-text').innerText = "System Active";
-            renderMessages();
-        };
+            return data.candidates[0].content.parts[0].text;
+        } catch (err) {
+            throw err;
+        }
+    }
 
+    document.getElementById('chat-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('user-input');
+        const val = input.value.trim();
+        if(!val) return;
+
+        messages.push({ role: 'user', text: val });
+        input.value = '';
         renderMessages();
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+
+        try {
+            const reply = await fetchAI(val);
+            messages.push({ role: 'assistant', text: reply });
+        } catch (err) {
+            messages.push({ role: 'assistant', text: `⚠️ **Connection Issue:** ${err.message}` });
+        }
+        renderMessages();
+    };
+</script>

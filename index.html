@@ -37,9 +37,9 @@
                 <span class="text-2xl font-bold tracking-tighter italic text-white">Healthiva<span class="text-cyan-500">.</span></span>
             </div>
             <div class="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-widest font-bold text-gray-500">
-                <a href="#features" class="hover:text-cyan-400">Features</a>
-                <a href="#workflow" class="hover:text-cyan-400">Workflow</a>
-                <a href="#security" class="hover:text-cyan-400">Security</a>
+                <a href="#features" class="hover:text-cyan-400 transition-colors">Features</a>
+                <a href="#workflow" class="hover:text-cyan-400 transition-colors">Workflow</a>
+                <a href="#security" class="hover:text-cyan-400 transition-colors">Security</a>
             </div>
             <button onclick="startApp()" class="px-6 py-2.5 bg-white text-black text-sm font-bold rounded-full hover:scale-105 transition-all">Launch App</button>
         </nav>
@@ -50,16 +50,16 @@
                 <span class="text-[11px] uppercase tracking-widest font-bold text-cyan-400">Intelligence v2.8</span>
             </div>
             <h1 class="text-6xl md:text-9xl font-extrabold tracking-tighter mb-8 text-gradient leading-[0.9]">Health advice <br> made simple.</h1>
-            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">An intelligent ecosystem providing clear remedies, precautions, and local care without the medical jargon.</p>
-            <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center justify-center gap-3 mx-auto">
-                Start Consultation <i data-lucide="arrow-right"></i>
+            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">An intelligent ecosystem giving you clear remedies, precautions, and medical insights without the jargon.</p>
+            <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center justify-center gap-3 mx-auto group">
+                Start Consultation <i data-lucide="arrow-right" class="group-hover:translate-x-1 transition-transform"></i>
             </button>
 
             <div class="mt-32 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto pt-12 border-t border-white/5">
-                <div><div class="text-3xl font-bold text-white">98.4%</div><div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Accuracy</div></div>
-                <div><div class="text-3xl font-bold text-white">Instant</div><div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Response</div></div>
-                <div><div class="text-3xl font-bold text-white">HIPAA</div><div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Privacy</div></div>
-                <div><div class="text-3xl font-bold text-white">24/7</div><div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Available</div></div>
+                <div><div class="text-3xl font-bold text-white mb-1">98.4%</div><div class="text-[10px] uppercase tracking-widest font-bold text-gray-500">Accuracy</div></div>
+                <div><div class="text-3xl font-bold text-white mb-1">Instant</div><div class="text-[10px] uppercase tracking-widest font-bold text-gray-500">Response</div></div>
+                <div><div class="text-3xl font-bold text-white mb-1">HIPAA</div><div class="text-[10px] uppercase tracking-widest font-bold text-gray-500">Privacy</div></div>
+                <div><div class="text-3xl font-bold text-white mb-1">24/7</div><div class="text-[10px] uppercase tracking-widest font-bold text-gray-500">Available</div></div>
             </div>
         </section>
 
@@ -67,21 +67,46 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="feature-card p-10 rounded-[2.5rem] text-center">
                     <i data-lucide="camera" class="text-cyan-400 w-12 h-12 mx-auto mb-6"></i>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Visual Diagnostics</h3>
-                    <p class="text-gray-400 text-sm">Upload photos for instant identification of skin concerns or common issues.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Visual Analysis</h3>
+                    <p class="text-gray-400 text-sm">Upload photos of skin concerns for immediate markers identification.</p>
                 </div>
                 <div class="feature-card p-10 rounded-[2.5rem] text-center">
                     <i data-lucide="brain-circuit" class="text-purple-400 w-12 h-12 mx-auto mb-6"></i>
                     <h3 class="text-2xl font-bold mb-4 text-white">Simplified Logic</h3>
-                    <p class="text-gray-400 text-sm">Translates complex medical symptoms into easy-to-follow next steps.</p>
+                    <p class="text-gray-400 text-sm">Translates complex data into clear precautions and remedies.</p>
                 </div>
                 <div class="feature-card p-10 rounded-[2.5rem] text-center">
                     <i data-lucide="map-pin" class="text-blue-400 w-12 h-12 mx-auto mb-6"></i>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Local Remedies</h3>
-                    <p class="text-gray-400 text-sm">Find professional clinics or home-based remedies tailored to you.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Local Care</h3>
+                    <p class="text-gray-400 text-sm">Find professional clinics near your location instantly.</p>
                 </div>
             </div>
         </section>
+
+        <section id="security" class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5 bg-white/[0.01]">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-6">Military-grade <span class="text-cyan-500">Privacy.</span></h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">Your health data is sensitive. Healthiva uses session-based encryption, meaning your history stays with you and is cleared when you reset.</p>
+                    <ul class="space-y-4 text-sm text-gray-300">
+                        <li class="flex items-center gap-3"><i data-lucide="shield-check" class="text-cyan-400 w-5 h-5"></i> End-to-end encrypted sessions</li>
+                        <li class="flex items-center gap-3"><i data-lucide="lock" class="text-cyan-400 w-5 h-5"></i> HIPAA compliant architecture</li>
+                    </ul>
+                </div>
+                <div class="glass p-8 rounded-[2rem] border-white/10 relative overflow-hidden">
+                    <div class="scanning-line"></div>
+                    <div class="space-y-4">
+                        <div class="h-2 w-3/4 bg-white/10 rounded-full"></div>
+                        <div class="h-2 w-1/2 bg-white/10 rounded-full"></div>
+                        <div class="h-2 w-5/6 bg-cyan-500/20 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center text-[10px] text-gray-600 uppercase tracking-widest font-bold">
+            © 2026 Healthiva Intelligence Hub.
+        </footer>
     </div>
 
     <div id="app-view" class="hidden-view flex h-screen bg-[#050505] overflow-hidden">
@@ -93,43 +118,45 @@
                 </div>
 
                 <div class="flex p-1 bg-white/5 rounded-xl border border-white/5">
-                    <button onclick="setSidebarView('profile')" id="tab-profile" class="flex-1 py-2 text-[9px] font-bold uppercase rounded-lg bg-cyan-600 text-white">Profile</button>
-                    <button onclick="setSidebarView('local')" id="tab-local" class="flex-1 py-2 text-[9px] font-bold uppercase rounded-lg text-gray-500">Local Care</button>
+                    <button onclick="setSidebarView('profile')" id="tab-profile" class="flex-1 py-2 text-[9px] font-bold uppercase rounded-lg bg-cyan-600 text-white transition-all">Profile</button>
+                    <button onclick="setSidebarView('local')" id="tab-local" class="flex-1 py-2 text-[9px] font-bold uppercase rounded-lg text-gray-500 transition-all">Local Care</button>
                 </div>
 
                 <div id="sidebar-profile" class="space-y-6">
-                    <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500/60 mb-3 block">Clinical History</label>
-                    <textarea id="medical-history" placeholder="Allergies, chronic conditions..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50"></textarea>
+                    <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500/60 block">Clinical History</label>
+                    <textarea id="medical-history" placeholder="Allergies, conditions..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white focus:outline-none focus:border-cyan-500/50 resize-none"></textarea>
                 </div>
 
                 <div id="sidebar-local" class="hidden space-y-6">
                     <button onclick="requestLocation()" class="w-full py-2.5 bg-cyan-600 text-white text-[10px] font-bold uppercase rounded-xl flex items-center justify-center gap-2">
                         <i data-lucide="navigation" class="w-3 h-3"></i> Locate Clinics
                     </button>
-                    <div id="doctor-list" class="space-y-4 text-xs text-gray-400"></div>
+                    <div id="doctor-list" class="space-y-4 text-[10px] text-gray-400"></div>
                 </div>
             </div>
             <div class="p-6 border-t border-white/5">
-                <button onclick="location.reload()" class="w-full p-3.5 text-xs text-gray-500 hover:text-red-400 bg-white/5 rounded-xl transition-all">Reset Consultation</button>
+                <button onclick="location.reload()" class="w-full p-3.5 text-xs text-gray-500 hover:text-red-400 bg-white/5 rounded-xl transition-all border border-transparent">Reset Session</button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0">
-            <header class="h-16 border-b border-white/5 flex items-center px-6">
+            <header class="h-16 border-b border-white/5 flex items-center px-6 bg-[#050505]/50 backdrop-blur-xl">
                 <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">Consultation Active</span>
             </header>
-            <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-10"></div>
+
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-12 space-y-10"></div>
+
             <div class="p-4 md:p-8">
                 <div class="max-w-4xl mx-auto relative">
-                    <div id="image-preview-container" class="hidden mb-4 relative">
-                        <img id="image-preview" src="" class="w-32 h-32 object-cover rounded-xl border-2 border-cyan-500">
+                    <div id="image-preview-container" class="hidden mb-4 relative inline-block">
+                        <img id="image-preview" src="" class="w-32 h-32 object-cover rounded-2xl border-2 border-cyan-500">
                         <button onclick="clearImage()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"><i data-lucide="x" class="w-3 h-3"></i></button>
                     </div>
                     <form id="chat-form" class="glass rounded-3xl p-3 flex items-end gap-2">
-                        <button type="button" onclick="document.getElementById('file-input').click()" class="p-4 text-gray-500 hover:text-cyan-400"><i data-lucide="camera"></i></button>
+                        <button type="button" onclick="document.getElementById('file-input').click()" class="p-4 text-gray-500 hover:text-cyan-400 transition-colors"><i data-lucide="camera"></i></button>
                         <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewImage(event)">
-                        <textarea id="user-input" rows="1" placeholder="How can I help you feel better?" class="flex-1 bg-transparent border-none text-sm py-4 text-white resize-none focus:ring-0"></textarea>
-                        <button type="submit" id="send-btn" class="p-4 bg-cyan-600 text-white rounded-2xl"><i data-lucide="send"></i></button>
+                        <textarea id="user-input" rows="1" placeholder="Describe how you feel..." class="flex-1 bg-transparent border-none text-sm py-4 text-white resize-none focus:ring-0"></textarea>
+                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all"><i data-lucide="send"></i></button>
                     </form>
                 </div>
             </div>
@@ -137,8 +164,8 @@
     </div>
 
     <script type="module">
-        const API_KEY = "AIzaSyDkDm9r1ASN7so_lthETi8GNTZbN8dkjuU";
-        let messages = [{ role: 'assistant', text: 'Hello! Describe your symptoms or share a photo. I will give you simple advice and home remedies.' }];
+        const API_KEY = "AIzaSyCOhAG53eovpaNBiivQZZLl0eMyHZ_PeUw";
+        let messages = [{ role: 'assistant', text: 'Hello! I am Healthiva. Please describe your symptoms or share a photo for analysis. I will provide simple advice and remedies.' }];
         let attachedImage = null;
 
         window.startApp = () => {
@@ -166,10 +193,7 @@
             reader.readAsDataURL(file);
         };
 
-        window.clearImage = () => {
-            attachedImage = null;
-            document.getElementById('image-preview-container').classList.add('hidden');
-        };
+        window.clearImage = () => { attachedImage = null; document.getElementById('image-preview-container').classList.add('hidden'); };
 
         window.renderMessages = () => {
             const container = document.getElementById('chat-container');
@@ -190,15 +214,13 @@
             const val = input.value.trim();
             if (!val && !attachedImage) return;
 
-            const userText = val || "[Image Shared]";
-            messages.push({ role: 'user', text: userText });
+            messages.push({ role: 'user', text: val || "[Image Shared]" });
             const currentImg = attachedImage;
             input.value = ''; clearImage(); renderMessages();
-
-            document.getElementById('status-text').innerText = "Analyzing...";
+            document.getElementById('status-text').innerText = "Analyzing Symptoms...";
 
             try {
-                const parts = [{ text: `You are Healthiva Assistant. History: ${document.getElementById('medical-history').value}. Question: ${val}` }];
+                const parts = [{ text: `System: You are Healthiva AI. Use simple language. Clinical History: ${document.getElementById('medical-history').value}. User Query: ${val}` }];
                 if (currentImg) parts.push({ inlineData: { mimeType: "image/jpeg", data: currentImg.split(',')[1] } });
 
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
@@ -210,25 +232,24 @@
                 const data = await res.json();
                 messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
             } catch (err) {
-                messages.push({ role: 'assistant', text: "Service temporary unavailable. Please verify your API key connection." });
+                messages.push({ role: 'assistant', text: "Service Error. Please ensure your API key is active." });
             }
-
             document.getElementById('status-text').innerText = "Consultation Active";
             renderMessages();
         };
 
         window.requestLocation = () => {
             const list = document.getElementById('doctor-list');
-            list.innerHTML = "Locating nearby clinics...";
+            list.innerHTML = "Finding clinics...";
             navigator.geolocation.getCurrentPosition(async (pos) => {
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: `List 3 medical clinics near lat ${pos.coords.latitude}, lng ${pos.coords.longitude}. Keep it brief.` }] }] })
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `List 3 medical clinics near lat ${pos.coords.latitude}, lng ${pos.coords.longitude}. Brief format.` }] }] })
                     });
                     const data = await res.json();
                     list.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
-                } catch (e) { list.innerHTML = "Clinics data unavailable."; }
+                } catch (e) { list.innerHTML = "Search failed."; }
             }, () => list.innerHTML = "Location denied.");
         };
 

@@ -14,7 +14,8 @@
         .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px 20px 20px 4px; }
         .chat-bubble-user { background: #0891b2; color: white; border-radius: 20px 20px 4px 20px; }
         .prose h3 { color: var(--brand-cyan); font-size: 1rem; margin-top: 10px; text-transform: uppercase; }
-        .prose p { margin-bottom: 8px; }
+        .loading-dots::after { content: '...'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60% { content: '...'; } 80%, 100% { content: ''; } }
     </style>
 </head>
 <body>
@@ -29,7 +30,7 @@
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-2">Patient Notes</label>
                 <textarea id="medical-history" placeholder="Add allergies/history..." class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-white resize-none focus:outline-none focus:border-cyan-500"></textarea>
             </div>
-            <div class="text-[10px] text-gray-600">Engine: <span class="text-cyan-500">Gemini 1.5 Flash</span></div>
+            <div id="status-indicator" class="text-[10px] text-gray-600 uppercase tracking-widest font-bold">System: <span class="text-green-500">Online</span></div>
         </aside>
 
         <main class="flex-1 flex flex-col">
@@ -38,20 +39,19 @@
             <div class="p-6">
                 <div class="max-w-3xl mx-auto">
                     <form id="chat-form" class="glass rounded-2xl p-2 flex gap-2">
-                        <input type="text" id="user-input" placeholder="Describe your symptoms..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm p-3 text-white">
-                        <button type="submit" class="bg-cyan-600 px-6 py-2 rounded-xl text-white font-bold hover:bg-cyan-500 transition-colors">Send</button>
+                        <input type="text" id="user-input" placeholder="Type your health concern..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm p-3 text-white">
+                        <button type="submit" id="send-btn" class="bg-cyan-600 px-6 py-2 rounded-xl text-white font-bold hover:bg-cyan-500 transition-colors">Send</button>
                     </form>
-                    <p class="text-[9px] text-gray-600 text-center mt-3 uppercase tracking-widest">Informational purposes only.</p>
+                    <p class="text-[9px] text-gray-600 text-center mt-3 uppercase tracking-widest">Healthiva AI Guidance System</p>
                 </div>
             </div>
         </main>
     </div>
 
     <script type="module">
-        // Using your provided Key
         const API_KEY = "AIzaSyCOhAG53eovpaNBiivQZZLl0eMyHZ_PeUw"; 
 
-        let messages = [{ role: 'assistant', text: "Welcome. How are you feeling today? I can help with symptom analysis and home remedies." }];
+        let messages = [{ role: 'assistant', text: "Consultation started. Please describe your symptoms or ask a health question." }];
 
         const render = () => {
             const container = document.getElementById('chat-container');
@@ -70,21 +70,25 @@
             const input = document.getElementById('user-input');
             const history = document.getElementById('medical-history').value;
             const val = input.value.trim();
+            const status = document.getElementById('status-indicator');
+            
             if(!val) return;
 
             messages.push({ role: 'user', text: val });
             input.value = '';
             render();
 
+            status.innerHTML = 'System: <span class="text-cyan-500 loading-dots">Thinking</span>';
+
             try {
-                // CHANGED: Updated to v1 (stable) and fixed model string
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                // CHANGED: Reverted to v1beta but with specific model path that is most universal
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         contents: [{ 
                             parts: [{ 
-                                text: `You are Healthiva, a helpful medical assistant. Be concise. User history: ${history}. User query: ${val}` 
+                                text: `System: You are Healthiva medical AI. Be helpful and clear. Patient History: ${history}. Query: ${val}` 
                             }] 
                         }] 
                     })
@@ -93,14 +97,27 @@
                 const data = await response.json();
 
                 if (data.error) {
-                    messages.push({ role: 'assistant', text: `⚠️ **API Error:** ${data.error.message}` });
+                    // If v1beta fails, try v1 automatically
+                    const retryResponse = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: val }] }] })
+                    });
+                    const retryData = await retryResponse.json();
+                    
+                    if(retryData.error) {
+                         messages.push({ role: 'assistant', text: `⚠️ **Error:** ${retryData.error.message}` });
+                    } else {
+                         messages.push({ role: 'assistant', text: retryData.candidates[0].content.parts[0].text });
+                    }
                 } else {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    messages.push({ role: 'assistant', text: aiReply });
+                    messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
                 }
             } catch (err) {
-                messages.push({ role: 'assistant', text: "❌ **Network Error:** Check your internet connection." });
+                messages.push({ role: 'assistant', text: "❌ **Connection Error.** Please check your network." });
             }
+            
+            status.innerHTML = 'System: <span class="text-green-500">Online</span>';
             render();
         };
 

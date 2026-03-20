@@ -45,8 +45,8 @@
         </nav>
 
         <section class="max-w-7xl mx-auto px-6 pt-32 pb-40 text-center">
-            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight text-white">Expert health advice,<br>delivered instantly.</h1>
-            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Simple explanations, precautions, and remedies powered by Gemini AI.</p>
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight">Health analysis,<br>powered by Flash.</h1>
+            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Simple explanations, precautions, and remedies delivered instantly.</p>
             <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center gap-3 mx-auto">
                 Start Consultation <i data-lucide="chevron-right"></i>
             </button>
@@ -76,7 +76,7 @@
                     <span id="status-dot" class="status-pulse bg-green-500"></span>
                     <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">System Ready</span>
                 </div>
-                <span class="text-[9px] text-cyan-500/40 uppercase font-mono tracking-widest">Secure Link Active</span>
+                <span class="text-[9px] text-cyan-500/40 uppercase font-mono tracking-widest italic">Flash 1.5 Latest</span>
             </header>
 
             <div id="chat-container" class="flex-1 overflow-y-auto p-6 md:p-12 space-y-10"></div>
@@ -84,8 +84,8 @@
             <div class="p-6 md:p-8">
                 <div class="max-w-4xl mx-auto">
                     <form id="chat-form" class="glass rounded-[2rem] p-2 flex items-center gap-2 border border-white/10 shadow-2xl">
-                        <input type="text" id="user-input" placeholder="Describe your concern..." class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
-                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all"><i data-lucide="send"></i></button>
+                        <input type="text" id="user-input" placeholder="Describe your symptoms..." class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
+                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all shadow-lg"><i data-lucide="send"></i></button>
                     </form>
                 </div>
             </div>
@@ -95,138 +95,11 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
-        // Verified API Key
-        const API_KEY = "AIzaSyDEH3UZ1Jnccc1xLrxJHTVYnGp2rAaQVJQ";
-        const genAI = new GoogleGenerativeAI(API_KEY);
-
-        let messages = [{ 
-            role: 'assistant', 
-            text: 'Hello! I am **Healthiva**. Describe your symptoms, and I will provide an explanation, followed by **Precautions** and **Remedies**.' 
-        }];
-
-        window.startApp = () => {
-            document.getElementById('landing-view').classList.add('hidden-view');
-            document.getElementById('app-view').classList.remove('hidden-view');
-            render();
-            lucide.createIcons();
-        };
-
-        const render = () => {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = messages.map(m => `
-                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div class="max-w-[85%] p-5 ${m.role === 'user' ? 'chat-bubble-user shadow-xl' : 'chat-bubble-assistant text-gray-300 shadow-xl'}">
-                        <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
-                    </div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        };
-
-        async function trySDK(prompt) {
-            const models = ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-pro"];
-            for (const name of models) {
-                try {
-                    const model = genAI.getGenerativeModel({ model: name });
-                    const result = await model.generateContent(prompt);
-                    const response = await result.response;
-                    return response.text();
-                } catch (e) {
-                    if (e.message.includes("404")) continue;
-                    throw e;
-                }
-            }
-            throw new Error("SDK_404");
-        }
-
-        async function tryRestFetch(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await res.json();
-            if (res.ok) return data.candidates[0].content.parts[0].text;
-            throw new Error(data.error?.message || "REST_ERROR");
-        }
-
-        document.getElementById('chat-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('user-input');
-            const statusDot = document.getElementById('status-dot');
-            const statusText = document.getElementById('status-text');
-            const val = input.value.trim();
-            if (!val) return;
-
-            messages.push({ role: 'user', text: val });
-            input.value = ''; 
-            render();
-
-            statusText.innerText = "Analyzing Symptoms...";
-            statusDot.className = "status-pulse bg-cyan-500 animate-pulse";
-
-            try {
-                const history = document.getElementById('medical-history').value;
-                const systemPrompt = `Role: Medical Assistant. Format: 1. Explanation, 2. ### Precautions, 3. ### Remedies. Context: Patient history is ${history}. Query: ${val}`;
-                
-                let text;
-                try {
-                    text = await trySDK(systemPrompt);
-                } catch (sdkErr) {
-                    // Fallback to manual fetch if SDK hits a naming mismatch
-                    text = await tryRestFetch(systemPrompt);
-                }
-                
-                messages.push({ role: 'assistant', text: text });
-            } catch (err) {
-                messages.push({ 
-                    role: 'assistant', 
-                    text: `⚠️ **API Configuration Issue**\n\nYour key is active, but the model cannot be found. This usually means the **Generative Language API** is not enabled.\n\n[Click here to Enable the API](https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com)` 
-                });
-            }
-
-            statusText.innerText = "System Ready";
-            statusDot.className = "status-pulse bg-green-500";
-            render();
-        };
-
-        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
-    </script>
-</body>
-</html>                </div>
-            </div>
-            <div class="p-6 border-t border-white/5 text-center">
-                <button onclick="location.reload()" class="text-[10px] text-gray-500 hover:text-red-400 uppercase font-bold tracking-widest">Reset Chat</button>
-            </div>
-        </aside>
-
-        <main class="flex-1 flex flex-col min-w-0">
-            <header class="h-16 border-b border-white/5 flex items-center px-8 justify-between">
-                <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">Ready</span>
-                <span class="text-[9px] text-cyan-500/40 uppercase font-mono">SDK Mode: Active</span>
-            </header>
-            <div id="chat-container" class="flex-1 overflow-y-auto p-6 md:p-12 space-y-10"></div>
-            <div class="p-6 md:p-8">
-                <div class="max-w-4xl mx-auto">
-                    <form id="chat-form" class="glass rounded-[2rem] p-2 flex items-center gap-2 border border-white/10 shadow-2xl">
-                        <input type="text" id="user-input" placeholder="How can I help you today?" class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
-                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all"><i data-lucide="send"></i></button>
-                    </form>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
-        // Using your last provided key
         const API_KEY = "AIzaSyDEH3UZ1Jnccc1xLrxJHTVYnGp2rAaQVJQ";
         const genAI = new GoogleGenerativeAI(API_KEY);
         
-        // Use gemini-1.5-flash which is the most stable via SDK
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Target specifically gemini-1.5-flash-latest
+        const MODEL_NAME = "gemini-1.5-flash-latest";
 
         let messages = [{ 
             role: 'assistant', 
@@ -252,32 +125,60 @@
             container.scrollTop = container.scrollHeight;
         };
 
+        async function callFlashLatest(prompt) {
+            try {
+                // Primary Method: SDK with Latest Alias
+                const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                return response.text();
+            } catch (sdkErr) {
+                console.warn("SDK Request Failed, trying Direct REST v1 Stable...", sdkErr);
+                
+                // Fallback Method: Manual Fetch to v1 Stable Endpoint
+                const url = `https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                
+                const data = await res.json();
+                if (res.ok) return data.candidates[0].content.parts[0].text;
+                throw new Error(data.error?.message || "Model failed to respond.");
+            }
+        }
+
         document.getElementById('chat-form').onsubmit = async (e) => {
             e.preventDefault();
             const input = document.getElementById('user-input');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
             const val = input.value.trim();
             if (!val) return;
 
             messages.push({ role: 'user', text: val });
-            input.value = ''; render();
-            document.getElementById('status-text').innerText = "Analyzing Symptoms...";
+            input.value = ''; 
+            render();
+
+            statusText.innerText = "Processing via Flash...";
+            statusDot.className = "status-pulse bg-cyan-500 animate-pulse";
 
             try {
                 const history = document.getElementById('medical-history').value;
-                const prompt = `System Instructions: You are a medical health assistant. Keep explanations clear. Always include sections for ### Precautions and ### Remedies. Context: Patient has ${history}. Question: ${val}`;
+                const systemPrompt = `Role: Medical Assistant. Format: 1. Explanation, 2. ### Precautions, 3. ### Remedies. Patient Context: ${history}. User Query: ${val}`;
                 
-                // Using SDK method to generate content
-                const result = await model.generateContent(prompt);
-                const response = await result.response;
-                const text = response.text();
-
+                const text = await callFlashLatest(systemPrompt);
                 messages.push({ role: 'assistant', text: text });
             } catch (err) {
-                console.error(err);
-                messages.push({ role: 'assistant', text: `⚠️ **API Error:** ${err.message}. Please ensure the "Generative Language API" is enabled in your Google Cloud Console.` });
+                messages.push({ 
+                    role: 'assistant', 
+                    text: `⚠️ **Flash Error:** ${err.message}. \n\nCheck your project settings in Google Cloud to ensure **gemini-1.5-flash-latest** is active for your region.` 
+                });
             }
 
-            document.getElementById('status-text').innerText = "Ready";
+            statusText.innerText = "System Ready";
+            statusDot.className = "status-pulse bg-green-500";
             render();
         };
 

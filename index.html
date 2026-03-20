@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthiva | AI Medical Assistant</title>
+    <title>Healthiva | Ultra-Fast AI Health</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,7 +24,7 @@
         .glass { background: rgba(15, 15, 15, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .text-gradient { background: linear-gradient(135deg, #fff 30%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hidden-view { display: none !important; }
-        .prose h3 { font-size: 1rem; font-weight: 700; color: var(--brand-cyan); margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .prose h3 { font-size: 0.9rem; font-weight: 800; color: var(--brand-cyan); margin-top: 1.5rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
         .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px 24px 24px 4px; }
         .chat-bubble-user { background: #0891b2; color: white; border-radius: 24px 24px 4px 24px; }
         .status-pulse { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
@@ -37,7 +37,7 @@
         <nav class="flex items-center justify-between px-8 py-8 sticky top-0 z-50 bg-[#050505]/80 backdrop-blur-lg border-b border-white/5">
             <div class="flex items-center gap-2">
                 <div class="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20">
-                    <i data-lucide="heart-pulse" class="w-6 h-6 text-cyan-400"></i>
+                    <i data-lucide="zap" class="w-6 h-6 text-cyan-400"></i>
                 </div>
                 <span class="text-2xl font-bold tracking-tighter italic text-white">Healthiva<span class="text-cyan-500">.</span></span>
             </div>
@@ -45,10 +45,10 @@
         </nav>
 
         <section class="max-w-7xl mx-auto px-6 pt-32 pb-40 text-center">
-            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight">Health analysis,<br>powered by Flash.</h1>
-            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Simple explanations, precautions, and remedies delivered instantly.</p>
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight">Instant health insights.<br>Zero latency.</h1>
+            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Powered by the latest Gemini Flash engine for immediate remedies and precautions.</p>
             <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center gap-3 mx-auto">
-                Start Consultation <i data-lucide="chevron-right"></i>
+                Get Started <i data-lucide="chevron-right"></i>
             </button>
         </section>
     </div>
@@ -61,12 +61,12 @@
                     <h1 class="text-xl font-bold text-white italic">Healthiva</h1>
                 </div>
                 <div class="space-y-4">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-cyan-500/60 block">Medical History</label>
-                    <textarea id="medical-history" placeholder="Allergies, chronic conditions..." class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50 transition-all"></textarea>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-cyan-500/60 block">Medical Context</label>
+                    <textarea id="medical-history" placeholder="Any pre-existing conditions..." class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50 transition-all"></textarea>
                 </div>
             </div>
             <div class="p-6 border-t border-white/5 text-center">
-                <button onclick="location.reload()" class="text-[10px] text-gray-500 hover:text-red-400 uppercase font-bold tracking-widest">End Session</button>
+                <button onclick="location.reload()" class="text-[10px] text-gray-500 hover:text-red-400 uppercase font-bold tracking-widest">Reset Session</button>
             </div>
         </aside>
 
@@ -76,7 +76,9 @@
                     <span id="status-dot" class="status-pulse bg-green-500"></span>
                     <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">System Ready</span>
                 </div>
-                <span class="text-[9px] text-cyan-500/40 uppercase font-mono tracking-widest italic">Flash 1.5 Latest</span>
+                <div class="flex items-center gap-2">
+                   <span class="px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 rounded text-[9px] text-cyan-400 font-bold uppercase tracking-widest">Gemini Flash Latest</span>
+                </div>
             </header>
 
             <div id="chat-container" class="flex-1 overflow-y-auto p-6 md:p-12 space-y-10"></div>
@@ -84,7 +86,7 @@
             <div class="p-6 md:p-8">
                 <div class="max-w-4xl mx-auto">
                     <form id="chat-form" class="glass rounded-[2rem] p-2 flex items-center gap-2 border border-white/10 shadow-2xl">
-                        <input type="text" id="user-input" placeholder="Describe your symptoms..." class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
+                        <input type="text" id="user-input" placeholder="How are you feeling right now?" class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
                         <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all shadow-lg"><i data-lucide="send"></i></button>
                     </form>
                 </div>
@@ -98,12 +100,12 @@
         const API_KEY = "AIzaSyDEH3UZ1Jnccc1xLrxJHTVYnGp2rAaQVJQ";
         const genAI = new GoogleGenerativeAI(API_KEY);
         
-        // Target specifically gemini-1.5-flash-latest
-        const MODEL_NAME = "gemini-flash-latest";
+        // Target specifically the 'gemini-flash-latest' alias
+        const MODEL_ALIAS = "gemini-flash-latest";
 
         let messages = [{ 
             role: 'assistant', 
-            text: 'Hello! I am **Healthiva**. Describe your symptoms, and I will provide an explanation, followed by **Precautions** and **Remedies**.' 
+            text: 'Hello! I am **Healthiva**, optimized with Flash. Describe your symptoms, and I will provide an explanation, followed by **Precautions** and **Remedies**.' 
         }];
 
         window.startApp = () => {
@@ -125,18 +127,18 @@
             container.scrollTop = container.scrollHeight;
         };
 
-        async function callFlashLatest(prompt) {
+        async function callGemini(prompt) {
             try {
-                // Primary Method: SDK with Latest Alias
-                const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+                // Initializing the model with the latest flash alias
+                const model = genAI.getGenerativeModel({ model: MODEL_ALIAS });
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
                 return response.text();
-            } catch (sdkErr) {
-                console.warn("SDK Request Failed, trying Direct REST v1 Stable...", sdkErr);
+            } catch (err) {
+                console.error("Primary model failed, attempting direct REST fallback...", err);
                 
-                // Fallback Method: Manual Fetch to v1 Stable Endpoint
-                const url = `https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+                // REST Fallback for projects that haven't updated SDK versioning
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ALIAS}:generateContent?key=${API_KEY}`;
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -145,7 +147,7 @@
                 
                 const data = await res.json();
                 if (res.ok) return data.candidates[0].content.parts[0].text;
-                throw new Error(data.error?.message || "Model failed to respond.");
+                throw new Error(data.error?.message || "Model Unavailable");
             }
         }
 
@@ -161,19 +163,19 @@
             input.value = ''; 
             render();
 
-            statusText.innerText = "Processing via Flash...";
+            statusText.innerText = "Flash responding...";
             statusDot.className = "status-pulse bg-cyan-500 animate-pulse";
 
             try {
                 const history = document.getElementById('medical-history').value;
-                const systemPrompt = `Role: Medical Assistant. Format: 1. Explanation, 2. ### Precautions, 3. ### Remedies. Patient Context: ${history}. User Query: ${val}`;
+                const systemPrompt = `Role: Medical Assistant. Format: 1. Explanation, 2. ### Precautions, 3. ### Remedies. User Context: ${history}. Query: ${val}`;
                 
-                const text = await callFlashLatest(systemPrompt);
+                const text = await callGemini(systemPrompt);
                 messages.push({ role: 'assistant', text: text });
             } catch (err) {
                 messages.push({ 
                     role: 'assistant', 
-                    text: `⚠️ **Flash Error:** ${err.message}. \n\nCheck your project settings in Google Cloud to ensure **gemini-1.5-flash-latest** is active for your region.` 
+                    text: `⚠️ **Endpoint Error:** ${err.message}. \n\nEnsure your API key project has access to **${MODEL_ALIAS}**.` 
                 });
             }
 

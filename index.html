@@ -83,99 +83,112 @@
         </main>
     </div>
 
-    <script type="module">
-        const API_KEY = "AIzaSyDEH3UZ1Jnccc1xLrxJHTVYnGp2rAaQVJQ";
-        let messages = [{ 
-            role: 'assistant', 
-            text: 'Hello! I am **Healthiva**. Describe your symptoms, and I will provide a clear breakdown, followed by **Precautions** and **Remedies**.' 
-        }];
+<script type="module">
+    // Using your last provided key
+    const API_KEY = "AIzaSyDEH3UZ1Jnccc1xLrxJHTVYnGp2rAaQVJQ";
+    
+    let messages = [{ 
+        role: 'assistant', 
+        text: 'Hello! I am **Healthiva**. Describe your symptoms, and I will provide a clear breakdown, followed by **Precautions** and **Remedies**.' 
+    }];
 
-        window.startApp = () => {
-            document.getElementById('landing-view').classList.add('hidden-view');
-            document.getElementById('app-view').classList.remove('hidden-view');
-            render();
-            lucide.createIcons();
-        };
+    window.startApp = () => {
+        document.getElementById('landing-view').classList.add('hidden-view');
+        document.getElementById('app-view').classList.remove('hidden-view');
+        render();
+        lucide.createIcons();
+    };
 
-        const render = () => {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = messages.map(m => `
-                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div class="max-w-[85%] p-5 ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300 shadow-xl'}">
-                        <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
-                    </div>
+    const render = () => {
+        const container = document.getElementById('chat-container');
+        container.innerHTML = messages.map(m => `
+            <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
+                <div class="max-w-[85%] p-5 rounded-3xl ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300 shadow-xl'}">
+                    <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
                 </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    };
+
+    async function callGemini(prompt) {
+        const history = document.getElementById('medical-history').value;
+        
+        // This is the "Universal Payload" format
+        const payload = {
+            contents: [{
+                parts: [{ text: `System: You are Healthiva. Format: Explanation, ### Precautions, ### Remedies. Context: ${history}. User: ${prompt}` }]
+            }],
+            generationConfig: {
+                temperature: 0.7,
+                topK: 40,
+                topP: 0.95,
+                maxOutputTokens: 1024,
+            }
         };
 
-        async function tryEndpoints(payload) {
-            // Priority list of common Gemini URLs and model aliases
-            const endpoints = [
-                { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}` },
-                { url: `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}` },
-                { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}` }
-            ];
+        // Try these in order. If one fails with 404, it immediately tries the next.
+        const modelVariants = [
+            "gemini-1.5-flash",
+            "gemini-1.5-flash-latest",
+            "gemini-pro"
+        ];
 
-            let lastError = "";
-            for (const ep of endpoints) {
-                try {
-                    const res = await fetch(ep.url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const data = await res.json();
-                    
-                    if (res.ok) return data;
-                    
-                    // If we get a 404, we continue to the next endpoint
-                    if (res.status === 404) {
-                        lastError = "Endpoint or Model not found.";
-                        continue;
-                    }
+        for (const model of modelVariants) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-                    // If it's a 403 or other critical error, stop and report it
-                    lastError = data.error?.message || "Unknown API Error";
-                    break; 
-                } catch (e) {
-                    lastError = "Connection timed out.";
+                const data = await response.json();
+
+                if (response.ok && data.candidates) {
+                    return data.candidates[0].content.parts[0].text;
                 }
+                
+                // If it's a 404 (Model Not Found), we try the next model in our list
+                if (response.status === 404) {
+                    console.warn(`Model ${model} not found, trying next...`);
+                    continue; 
+                }
+
+                // If it's a 403 or 400, it's a key/service issue, not a model issue
+                throw new Error(data.error?.message || "API Configuration Error");
+
+            } catch (err) {
+                if (err.message.includes("404")) continue;
+                throw err;
             }
-            throw new Error(lastError);
+        }
+        throw new Error("No compatible models found for this API key. Ensure 'Generative Language API' is enabled in Google AI Studio.");
+    }
+
+    document.getElementById('chat-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('user-input');
+        const val = input.value.trim();
+        if (!val) return;
+
+        messages.push({ role: 'user', text: val });
+        input.value = ''; 
+        render();
+
+        document.getElementById('status-text').innerText = "Analyzing...";
+
+        try {
+            const reply = await callGemini(val);
+            messages.push({ role: 'assistant', text: reply });
+        } catch (err) {
+            messages.push({ role: 'assistant', text: `⚠️ **Update Required:** ${err.message}` });
         }
 
-        document.getElementById('chat-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('user-input');
-            const statusText = document.getElementById('status-text');
-            const statusDot = document.getElementById('status-dot');
-            const val = input.value.trim();
-            if (!val) return;
+        document.getElementById('status-text').innerText = "Ready";
+        render();
+    };
 
-            messages.push({ role: 'user', text: val });
-            input.value = ''; 
-            render();
-
-            statusText.innerText = "Analyzing Symptoms...";
-            statusDot.className = "status-dot bg-cyan-500 animate-pulse";
-
-            try {
-                const history = document.getElementById('medical-history').value;
-                const prompt = `Role: Medical Assistant. Instructions: Provide explanation, ### Precautions, then ### Remedies. Context: ${history}. Query: ${val}`;
-                
-                const data = await tryEndpoints({ contents: [{ parts: [{ text: prompt }] }] });
-                messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
-            } catch (err) {
-                messages.push({ role: 'assistant', text: `⚠️ **System Error:** ${err.message}` });
-            }
-
-            statusText.innerText = "System Ready";
-            statusDot.className = "status-dot bg-green-500";
-            render();
-        };
-
-        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
-    </script>
-</body>
-</html>
+    document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+</script>

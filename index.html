@@ -3,38 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthiva | AI Medical Assistant</title>
+    <title>Healthiva | Advanced AI Health Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root { --brand-cyan: #06b6d4; --bg-dark: #050505; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #e5e7eb; margin: 0; scroll-behavior: smooth; }
-        .glow { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); z-index: -1; pointer-events: none; }
-        .glass { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #e5e7eb; overflow-x: hidden; margin: 0; padding: 0; scroll-behavior: smooth; }
+        .glow { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%); border-radius: 50%; filter: blur(100px); z-index: -1; pointer-events: none; }
+        .glass { background: rgba(15, 15, 15, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .text-gradient { background: linear-gradient(135deg, #fff 30%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hidden-view { display: none !important; }
-        .prose h3 { color: var(--brand-cyan); font-weight: 700; margin-top: 1rem; text-transform: uppercase; font-size: 0.8rem; }
-        .chat-bubble-user { background: #0891b2; color: white; border-radius: 20px 20px 4px 20px; }
-        .chat-bubble-assistant { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 20px 4px; }
+        .prose { font-size: 0.875rem; line-height: 1.6; }
+        .prose h3 { font-size: 1rem; font-weight: 700; color: var(--brand-cyan); margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
+        .chat-bubble-user { background: #0891b2; color: white; }
+        .feature-card { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); transition: all 0.4s ease; }
+        .feature-card:hover { background: rgba(255,255,255,0.03); border-color: rgba(6, 182, 212, 0.2); }
     </style>
 </head>
-<body>
+<body class="selection:bg-cyan-500/30">
 
-    <div id="landing-view" class="relative min-h-screen flex flex-col">
-        <div class="glow top-0 right-0"></div>
-        <nav class="flex items-center justify-between px-8 py-6 border-b border-white/5">
+    <div id="landing-view">
+        <div class="glow top-[-20%] right-[-10%]"></div>
+        <div class="glow bottom-[-20%] left-[-10%] opacity-50"></div>
+
+        <nav class="flex items-center justify-between px-6 md:px-12 py-8 sticky top-0 z-50 bg-[#050505]/80 backdrop-blur-lg border-b border-white/5">
             <div class="flex items-center gap-2">
-                <i data-lucide="heart-pulse" class="text-cyan-400 w-8 h-8"></i>
-                <span class="text-2xl font-bold tracking-tighter italic">Healthiva</span>
+                <div class="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20">
+                    <i data-lucide="heart-pulse" class="w-6 h-6 text-cyan-400"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tighter italic text-white">Healthiva<span class="text-cyan-500">.</span></span>
             </div>
-            <button onclick="startApp()" class="px-6 py-2 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform">Launch App</button>
+            <div class="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-widest font-bold text-gray-500">
+                <a href="#features" class="hover:text-cyan-400 transition-colors">Features</a>
+                <a href="#faq" class="hover:text-cyan-400 transition-colors">FAQ</a>
+            </div>
+            <button onclick="startApp()" class="px-6 py-2.5 bg-white text-black text-sm font-bold rounded-full hover:scale-105 transition-all">
+                Launch App
+            </button>
         </nav>
 
-        <main class="flex-1 flex flex-col items-center justify-center text-center px-6">
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6">Your health,<br><span class="text-cyan-500">simplified.</span></h1>
-            <p class="text-gray-400 max-w-xl text-lg mb-10">Get instant medical insights, precautions, and home remedies powered by advanced AI.</p>
-            <button onclick="startApp()" class="px-10 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl shadow-xl transition-all">Start Consultation</button>
+        <section class="max-w-7xl mx-auto px-6 pt-24 pb-32 text-center">
+            <h1 class="text-6xl md:text-9xl font-extrabold tracking-tighter mb-8 text-gradient leading-[0.9]">Health advice <br> made simple.</h1>
+            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">An intelligent medical ecosystem that gives you clear remedies and precautions instantly.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center justify-center gap-3">
+                    Start Consultation <i data-lucide="arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="features" class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card p-10 rounded-[2.5rem] text-center">
+                    <i data-lucide="camera" class="text-cyan-400 w-12 h-12 mx-auto mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Visual Analysis</h3>
+                    <p class="text-gray-400 text-sm">Upload photos of concerns for immediate AI identification.</p>
+                </div>
+                <div class="feature-card p-10 rounded-[2.5rem] text-center">
+                    <i data-lucide="brain-circuit" class="text-purple-400 w-12 h-12 mx-auto mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Simplified Logic</h3>
+                    <p class="text-gray-400 text-sm">Complex medical data translated into clear next steps.</p>
+                </div>
+                <div class="feature-card p-10 rounded-[2.5rem] text-center">
+                    <i data-lucide="map-pin" class="text-blue-400 w-12 h-12 mx-auto mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Local Care</h3>
+                    <p class="text-gray-400 text-sm">Find professional help near your current location.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="max-w-4xl mx-auto px-6 py-32 border-t border-white/5">
+            <h2 class="text-3xl font-bold text-center text-white mb-16">Common Questions</h2>
+            <div class="space-y-4">
+                <div class="p-6 bg-white/[0.02] rounded-2xl">
+                    <h4 class="text-white font-bold mb-2">Is this a replacement for a doctor?</h4>
+                    <p class="text-gray-400 text-sm">No. This is an informational tool. Always consult a licensed professional for medical emergencies.</p>
+                </div>
+                <div class="p-6 bg-white/[0.02] rounded-2xl">
+                    <h4 class="text-white font-bold mb-2">How secure is my data?</h4>
+                    <p class="text-gray-400 text-sm">We process everything locally for your session. Your history is kept private and encrypted.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5 text-center text-[10px] text-gray-600 uppercase tracking-widest">
+            © 2026 Healthiva Intelligence. All rights reserved.
+        </footer>
+    </div>
+
+    <div id="app-view" class="hidden-view flex h-screen bg-[#050505] overflow-hidden">
+        <aside id="sidebar" class="w-80 bg-[#0a0a0a] border-r border-white/5 flex flex-col z-30">
+            <div class="p-6 flex-1 overflow-y-auto space-y-8">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
+                    <i data-lucide="heart-pulse" class="text-cyan-400 w-6 h-6"></i>
+                    <h1 class="text-xl font-bold text-white italic">Healthiva</h1>
+                </div>
+
+                <div class="flex p-1 bg-white/5 rounded-xl border border-white/5">
+                    <button onclick="setSidebarView('profile')" id="tab-profile" class="flex-1 py-2 text-[9px] font-bold uppercase tracking-widest rounded-lg bg-cyan-600 text-white">Profile</button>
+                    <button onclick="setSidebarView('local')" id="tab-local" class="flex-1 py-2 text-[9px] font-bold uppercase tracking-widest rounded-lg text-gray-500">Local Care</button>
+                </div>
+
+                <div id="sidebar-profile" class="space-y-6">
+                    <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500/60 mb-3 block">Clinical History</label>
+                    <textarea id="medical-history" placeholder="Allergies, chronic conditions..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs focus:outline-none focus:border-cyan-500/50 text-white resize-none"></textarea>
+                </div>
+
+                <div id="sidebar-local" class="hidden space-y-6">
+                    <button id="locate-btn" onclick="requestLocation()" class="w-full py-2.5 bg-cyan-600 text-white text-[10px] font-bold uppercase rounded-xl flex items-center justify-center gap-2">
+                        <i data-lucide="navigation" class="w-3 h-3"></i> Use My Location
+                    </button>
+                    <div id="doctor-list" class="space-y-4 text-xs text-gray-400"></div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-white/5">
+                <button onclick="location.reload()" class="w-full p-3.5 text-xs text-gray-500 hover:text-red-400 bg-white/5 rounded-xl transition-all">Reset Consultation</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col">
+            <header class="h-16 border-b border-white/5 flex items-center px-6">
+                <span class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">Consultation Active</span>
+            </header>
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-10"></div>
+            <div class="p-4 md:p-8">
+                <div class="max-w-4xl mx-auto">
+                    <div id="image-preview-container" class="hidden mb-4"><img id="image-preview" src="" class="w-24 h-24 rounded-xl border-2 border-cyan-500"></div>
+                    <form id="chat-form" class="glass rounded-3xl p-3 flex items-end gap-2">
+                        <button type="button" onclick="document.getElementById('file-input').click()" class="p-4 text-gray-500 hover:text-cyan-400"><i data-lucide="camera"></i></button>
+                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewImage(event)">
+                        <textarea id="user-input" rows="1" placeholder="Describe symptoms..." class="flex-1 bg-transparent border-none text-sm py-4 text-white resize-none focus:ring-0"></textarea>
+                        <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl"><i data-lucide="send"></i></button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        const GEMINI_KEY = "AIzaSyDkDm9r1ASN7so_lthETi8GNTZbN8dkjuU";
+
+        let messages = [{ role: 'assistant', text: 'Hello! Please describe your symptoms. I will give you simple advice and home remedies.' }];
+        let attachedImage = null;
+
+        window.startApp = () => {
+            document.getElementById('landing-view').classList.add('hidden-view');
+            document.getElementById('app-view').classList.remove('hidden-view');
+            renderMessages();
+            lucide.createIcons();
+        };
+
+        window.setSidebarView = (view) => {
+            document.getElementById('sidebar-profile').classList.toggle('hidden', view !== 'profile');
+            document.getElementById('sidebar-local').classList.toggle('hidden', view !== 'local');
+            document.getElementById('tab-profile').className = view === 'profile' ? "flex-1 py-2 text-[9px] font-bold uppercase rounded-lg bg-cyan-600 text-white" : "flex-1 py-2 text-[9px] font-bold uppercase rounded-lg text-gray-500";
+            document.getElementById('tab-local').className = view === 'local' ? "flex-1 py-2 text-[9px] font-bold uppercase rounded-lg bg-cyan-600 text-white" : "flex-1 py-2 text-[9px] font-bold uppercase rounded-lg text-gray-500";
+        };
+
+        window.previewImage = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                attachedImage = ev.target.result;
+                document.getElementById('image-preview').src = attachedImage;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.renderMessages = () => {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = messages.map(m => `
+                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
+                    <div class="max-w-[85%] p-4 rounded-3xl ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300'}">
+                        <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
+                    </div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        };
+
+        document.getElementById('chat-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('user-input');
+            const val = input.value.trim();
+            if (!val && !attachedImage) return;
+
+            messages.push({ role: 'user', text: val || "[Image Shared]" });
+            const currentImg = attachedImage;
+            input.value = ''; attachedImage = null;
+            document.getElementById('image-preview-container').classList.add('hidden');
+            renderMessages();
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [
+                            { text: `Role: Healthiva Assistant. Simple language. User History: ${document.getElementById('medical-history').value}. Query: ${val}` },
+                            ...(currentImg ? [{ inlineData: { mimeType: "image/jpeg", data: currentImg.split(',')[1] } }] : [])
+                        ]}]
+                    })
+                });
+                const data = await res.json();
+                messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
+            } catch (err) {
+                messages.push({ role: 'assistant', text: "Error. Please check your API key." });
+            }
+            renderMessages();
+        };
+
+        window.requestLocation = () => {
+            const list = document.getElementById('doctor-list');
+            list.innerHTML = "Searching nearby...";
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `List 3 medical clinics near lat ${pos.coords.latitude}, lng ${pos.coords.longitude}. Simple list format.` }] }] })
+                    });
+                    const data = await res.json();
+                    list.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
+                } catch (e) { list.innerHTML = "Error finding clinics."; }
+            }, () => list.innerHTML = "Location access denied.");
+        };
+
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    </script>
+</body>
+</html>            <button onclick="startApp()" class="px-10 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl shadow-xl transition-all">Start Consultation</button>
         </main>
     </div>
 

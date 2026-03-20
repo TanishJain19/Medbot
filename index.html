@@ -16,8 +16,8 @@
         .text-gradient { background: linear-gradient(135deg, #fff 30%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hidden-view { display: none !important; }
         .prose h3 { font-size: 1rem; font-weight: 700; color: var(--brand-cyan); margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; }
-        .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        .chat-bubble-user { background: #0891b2; color: white; }
+        .chat-bubble-assistant { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px 24px 24px 4px; }
+        .chat-bubble-user { background: #0891b2; color: white; border-radius: 24px 24px 4px 24px; }
     </style>
 </head>
 <body>
@@ -35,8 +35,8 @@
         </nav>
 
         <section class="max-w-7xl mx-auto px-6 pt-32 pb-40 text-center">
-            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight">Your health,<br>simplified.</h1>
-            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Instant remedies, precautions, and medical analysis powered by AI.</p>
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-gradient leading-tight">Expert health advice,<br>delivered instantly.</h1>
+            <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-12 font-light">Simple explanations, precautions, and remedies powered by Gemini 1.5 Flash.</p>
             <button onclick="startApp()" class="px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-2xl flex items-center gap-3 mx-auto">
                 Start Consultation <i data-lucide="chevron-right"></i>
             </button>
@@ -50,38 +50,26 @@
                     <i data-lucide="heart-pulse" class="text-cyan-400 w-6 h-6"></i>
                     <h1 class="text-xl font-bold text-white italic">Healthiva</h1>
                 </div>
-
                 <div class="space-y-4">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-cyan-500/60 block">Medical History</label>
-                    <textarea id="medical-history" placeholder="Allergies, chronic conditions..." class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50"></textarea>
+                    <textarea id="medical-history" placeholder="Allergies, conditions, or medications..." class="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white resize-none focus:outline-none focus:border-cyan-500/50"></textarea>
                 </div>
             </div>
-            
             <div class="p-6 border-t border-white/5 text-center">
                 <button onclick="location.reload()" class="text-[10px] text-gray-500 hover:text-red-400 uppercase font-bold tracking-widest">End Session</button>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 bg-[#050505]">
-            <header class="h-16 border-b border-white/5 flex items-center px-8">
+        <main class="flex-1 flex flex-col min-w-0">
+            <header class="h-16 border-b border-white/5 flex items-center px-8 justify-between">
                 <span id="status-text" class="text-[10px] font-medium text-gray-500 uppercase tracking-widest">Ready</span>
+                <span class="text-[9px] text-cyan-500/40 uppercase">Secure Connection</span>
             </header>
-
             <div id="chat-container" class="flex-1 overflow-y-auto p-6 md:p-12 space-y-10"></div>
-
             <div class="p-6 md:p-8">
                 <div class="max-w-4xl mx-auto">
-                    <div id="preview-box" class="hidden mb-4 relative inline-block">
-                        <img id="image-preview" src="" class="w-24 h-24 object-cover rounded-xl border border-cyan-500">
-                        <button onclick="clearImage()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"><i data-lucide="x" class="w-3 h-3"></i></button>
-                    </div>
-
-                    <form id="chat-form" class="glass rounded-[2rem] p-2 flex items-center gap-2 border border-white/10">
-                        <button type="button" onclick="document.getElementById('file-input').click()" class="p-4 text-gray-500 hover:text-cyan-400"><i data-lucide="camera"></i></button>
-                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="previewImage(event)">
-                        
-                        <input type="text" id="user-input" placeholder="Describe your concern..." class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
-                        
+                    <form id="chat-form" class="glass rounded-[2rem] p-2 flex items-center gap-2 border border-white/10 shadow-2xl">
+                        <input type="text" id="user-input" placeholder="Describe how you're feeling..." class="flex-1 bg-transparent border-none text-sm p-4 text-white focus:ring-0">
                         <button type="submit" class="p-4 bg-cyan-600 text-white rounded-2xl hover:bg-cyan-500 transition-all"><i data-lucide="send"></i></button>
                     </form>
                 </div>
@@ -90,9 +78,8 @@
     </div>
 
     <script type="module">
-        const API_KEY = "AIzaSyBQQqxeNFO_qcOwIYlBcc_mLziVl17VuLM";
-        let messages = [{ role: 'assistant', text: 'Hello! I am **Healthiva**. Describe your symptoms or upload a photo. I will provide a simple breakdown, followed by **Precautions** and **Remedies**.' }];
-        let attachedImage = null;
+        const API_KEY = "AIzaSyDRHYOdkcZhZRp17jPq4ajBF16UjedggnM";
+        let messages = [{ role: 'assistant', text: 'Hello! I am **Healthiva**. Describe your symptoms, and I will provide a clear breakdown, followed by **Precautions** and **Remedies**.' }];
 
         window.startApp = () => {
             document.getElementById('landing-view').classList.add('hidden-view');
@@ -101,23 +88,11 @@
             lucide.createIcons();
         };
 
-        window.previewImage = (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                attachedImage = ev.target.result;
-                document.getElementById('image-preview').src = attachedImage;
-                document.getElementById('preview-box').classList.remove('hidden');
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        };
-
-        window.clearImage = () => { attachedImage = null; document.getElementById('preview-box').classList.add('hidden'); };
-
         const render = () => {
             const container = document.getElementById('chat-container');
             container.innerHTML = messages.map(m => `
-                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-                    <div class="max-w-[85%] p-5 rounded-3xl ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300'}">
+                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div class="max-w-[85%] p-5 ${m.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant text-gray-300 shadow-xl'}">
                         <div class="prose">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
                     </div>
                 </div>
@@ -125,46 +100,47 @@
             container.scrollTop = container.scrollHeight;
         };
 
+        async function tryEndpoints(payload) {
+            const urls = [
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+                `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`
+            ];
+
+            for (const url of urls) {
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (res.ok) return data;
+                    if (res.status !== 404) throw new Error(data.error?.message || "API Error");
+                } catch (e) {
+                    if (!url.includes('v1/')) throw e; // Only re-throw if the last attempt fails
+                }
+            }
+            throw new Error("Model endpoint not found. Please enable Generative Language API.");
+        }
+
         document.getElementById('chat-form').onsubmit = async (e) => {
             e.preventDefault();
             const input = document.getElementById('user-input');
             const val = input.value.trim();
-            if (!val && !attachedImage) return;
+            if (!val) return;
 
-            messages.push({ role: 'user', text: val || "[Image]" });
-            const currentImg = attachedImage;
-            input.value = ''; clearImage(); render();
-            document.getElementById('status-text').innerText = "Analyzing...";
+            messages.push({ role: 'user', text: val });
+            input.value = ''; render();
+            document.getElementById('status-text').innerText = "Analyzing Symptoms...";
 
             try {
                 const history = document.getElementById('medical-history').value;
-                const prompt = `System: You are Healthiva Medical AI. Format: Explanation, then ### Precautions, then ### Remedies. History: ${history}. Query: ${val}`;
+                const prompt = `Role: Healthiva Medical Assistant. Instructions: Use simple language. Format: 1. Explanation, 2. ### Precautions, 3. ### Remedies. Context: ${history}. Query: ${val}`;
                 
-                const parts = [{ text: prompt }];
-                if (currentImg) parts.push({ inlineData: { mimeType: "image/jpeg", data: currentImg.split(',')[1] } });
-
-                // Cycle through endpoints to find the active one for this key
-                const endpoints = [
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-                    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`
-                ];
-
-                let finalData = null;
-                for (let url of endpoints) {
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts }] })
-                    });
-                    const data = await res.json();
-                    if (res.ok) { finalData = data; break; }
-                }
-
-                if (!finalData) throw new Error("Could not reach AI. Verify 'Generative Language API' is enabled.");
-
-                messages.push({ role: 'assistant', text: finalData.candidates[0].content.parts[0].text });
+                const data = await tryEndpoints({ contents: [{ parts: [{ text: prompt }] }] });
+                messages.push({ role: 'assistant', text: data.candidates[0].content.parts[0].text });
             } catch (err) {
-                messages.push({ role: 'assistant', text: `⚠️ **Error:** ${err.message}` });
+                messages.push({ role: 'assistant', text: `⚠️ **System Error:** ${err.message}` });
             }
 
             document.getElementById('status-text').innerText = "Ready";

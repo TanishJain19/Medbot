@@ -218,7 +218,7 @@
 
         async function callGemini(prompt, img) {
             const model = genAI.getGenerativeModel({ 
-                model: "gemini-flash-latest",
+                model: "gemini-1.5-flash",
                 systemInstruction: "You are MedBot Pro. Structure: Assessment, Precautions, Remedies. Direct clinical tone. ALWAYS include a disclaimer."
             });
             const hist = document.getElementById('medical-history').value;

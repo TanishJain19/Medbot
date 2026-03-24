@@ -14,22 +14,23 @@
         .glow { position: absolute; width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, rgba(6, 182, 212, 0) 70%); border-radius: 50%; filter: blur(120px); z-index: -1; pointer-events: none; }
         .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .hidden-view { display: none !important; }
-        
-        /* Formatted Response Styling */
-        .prose h3 { color: #22d3ee; font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-top: 1.2rem; border-bottom: 1px solid rgba(34, 211, 238, 0.2); padding-bottom: 4px; }
-        .prose ul { list-style-type: none; padding-left: 0; }
-        .prose li { position: relative; padding-left: 1.5rem; margin-bottom: 0.4rem; font-size: 0.85rem; color: #cbd5e1; }
-        .prose li::before { content: "→"; position: absolute; left: 0; color: #06b6d4; font-weight: bold; }
-        .prose strong { color: #f8fafc; }
-        .disclaimer-box { margin-top: 1.5rem; padding: 0.75rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 10px; color: #f87171; }
 
+        /* Formatted Clinical AI Responses */
+        .prose h3 { color: #22d3ee; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(34, 211, 238, 0.1); padding-bottom: 4px; }
+        .prose ul { list-style-type: none; padding-left: 0; margin-top: 0.5rem; }
+        .prose li { position: relative; padding-left: 1.25rem; margin-bottom: 0.5rem; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6; }
+        .prose li::before { content: "→"; position: absolute; left: 0; color: #06b6d4; font-weight: bold; }
+        .prose p { font-size: 0.9rem; color: #94a3b8; margin-bottom: 0.75rem; }
+        
         #sidebar { transition: transform 0.3s ease; z-index: 50; }
         @media (max-width: 1024px) {
             #sidebar { position: fixed; transform: translateX(-100%); height: 100%; width: 300px; }
             #sidebar.open { transform: translateX(0); }
         }
-        .chat-bubble-assistant { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px 20px 20px 4px; padding: 1.25rem; }
-        .chat-bubble-user { background: #0891b2; color: white; border-radius: 20px 20px 4px 20px; padding: 1.25rem; font-size: 0.9rem; }
+        .chat-bubble-assistant { background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px 24px 24px 4px; padding: 1.5rem; }
+        .chat-bubble-user { background: #0891b2; color: white; border-radius: 24px 24px 4px 24px; padding: 1.25rem; font-size: 0.9rem; }
+        .scanning-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--brand-cyan), transparent); animation: scan 3s infinite; z-index: 20; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
@@ -38,42 +39,72 @@
 
     <div id="home-view" class="h-screen w-full flex flex-col items-center justify-center px-6 bg-[#020617] relative overflow-hidden text-center">
         <div class="glow top-[-20%] left-[-10%]"></div>
-        <div class="max-w-5xl w-full flex flex-col items-center animate-in fade-in duration-1000">
+        <div class="max-w-5xl w-full flex flex-col items-center animate-in fade-in zoom-in duration-1000">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-8">
+                <div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">MedBot is Online</span>
+            </div>
             <h1 class="text-7xl md:text-[9rem] font-black tracking-tighter mb-4 text-white leading-none">MedBot<span class="text-cyan-500">.</span>Pro</h1>
-            <p class="text-slate-400 text-sm md:text-lg mb-12">Private Assistant. Formatted Insights.</p>
-            <button id="launch-btn" class="px-14 py-6 bg-white text-black rounded-full font-extrabold uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl">
-                Open Assistant
-            </button>
+            <p class="text-slate-400 text-sm md:text-lg max-w-xl font-light mb-12">Your private health assistant for clinical analysis and medical guidance.</p>
+            <button id="launch-btn" class="px-14 py-6 bg-white text-black rounded-full font-extrabold uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl">Open Assistant</button>
         </div>
     </div>
 
     <div id="app-view" class="hidden-view flex h-screen w-full overflow-hidden relative">
+        
         <aside id="sidebar" class="w-80 bg-[#070b14] border-r border-white/5 flex flex-col shrink-0">
             <div class="p-6 flex-1 overflow-y-auto space-y-6 custom-scroll">
                 <span class="font-black italic text-sm tracking-widest text-cyan-400">MEDBOT</span>
-                <div class="space-y-4">
-                    <label class="text-[10px] font-bold uppercase text-cyan-500/60 ml-1">My Medical Info</label>
-                    <textarea id="medical-history" placeholder="Example: Allergic to aspirin..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white focus:outline-none focus:border-cyan-500/50 resize-none"></textarea>
-                    <button onclick="findHospital()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase">Find a Hospital</button>
+                
+                <div class="flex bg-white/5 p-1 rounded-xl mb-6">
+                    <button onclick="setTab('context')" id="tab-context" class="flex-1 py-2 text-[10px] font-bold uppercase rounded-lg bg-cyan-600">Health Info</button>
+                    <button onclick="setTab('profile')" id="tab-profile" class="flex-1 py-2 text-[10px] font-bold uppercase rounded-lg text-slate-500 ml-1">My Profile</button>
                 </div>
-                <div class="pt-6 border-t border-white/5">
-                    <button onclick="location.reload()" class="w-full p-4 text-[10px] font-bold uppercase text-red-500/50">End Session</button>
+
+                <div id="view-context" class="space-y-4">
+                    <label class="text-[10px] font-bold uppercase text-cyan-500/60 ml-1">Medical Background</label>
+                    <textarea id="medical-history" placeholder="Allergies, chronic conditions..." class="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-xs text-white focus:outline-none focus:border-cyan-500/50 resize-none"></textarea>
+                    <button onclick="findHospital()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all">Find a Hospital</button>
+                </div>
+
+                <div id="view-profile" class="hidden space-y-4">
+                    <input type="text" id="p-name" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-white outline-none">
+                    <input type="text" id="p-age" placeholder="Age / Gender" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-white outline-none">
+                    <button onclick="saveProfile()" class="w-full py-3 bg-cyan-600 rounded-xl text-[10px] font-bold uppercase">Save My Profile</button>
+                </div>
+
+                <div class="pt-6 border-t border-white/5 space-y-3">
+                    <button onclick="downloadTranscript()" class="w-full flex items-center justify-between p-4 glass rounded-xl text-[10px] font-bold uppercase text-slate-400">Save History <i data-lucide="download" class="w-4 h-4 text-cyan-500"></i></button>
+                    <button onclick="location.reload()" class="w-full p-4 text-[10px] font-bold uppercase text-red-500/50">Close MedBot</button>
                 </div>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col relative bg-[#020617]">
-            <header class="h-16 border-b border-white/5 flex items-center px-6">
-                <button onclick="toggleMenu()" class="lg:hidden mr-4 text-white"><i data-lucide="menu"></i></button>
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Assistant is Online</span>
+        <main class="flex-1 flex flex-col relative bg-[#020617] min-w-0">
+            <header class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#020617]/80 backdrop-blur-md">
+                <button onclick="toggleMenu()" class="lg:hidden p-2 text-white bg-white/5 rounded-lg"><i data-lucide="menu"></i></button>
+                <div class="flex items-center gap-2">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-cyan-500"></div>
+                    <span id="status-text" class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tracking-[0.2em]">Ready to assist</span>
+                </div>
             </header>
 
             <div id="chat-container" class="flex-1 overflow-y-auto p-6 md:p-12 space-y-8 custom-scroll"></div>
 
             <div class="p-6 md:p-10">
-                <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto relative">
+                    <div id="image-preview-container" class="hidden absolute bottom-full mb-4">
+                        <div class="relative w-44 h-44 rounded-2xl overflow-hidden border-2 border-cyan-500 shadow-2xl">
+                            <div class="scanning-line"></div>
+                            <img id="image-preview" src="" class="w-full h-full object-cover">
+                            <button onclick="clearImage()" class="absolute top-2 right-2 p-1 bg-black/60 rounded-full text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+
                     <form id="chat-form" class="glass rounded-[2.5rem] p-2 flex items-center gap-2 border-white/10">
-                        <input type="text" id="user-input" placeholder="How are you feeling?" class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 text-white px-4 outline-none">
+                        <button type="button" onclick="document.getElementById('file-input').click()" class="p-4 text-slate-500 hover:text-cyan-400"><i data-lucide="camera" class="w-5 h-5"></i></button>
+                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleImage(event)">
+                        <input type="text" id="user-input" placeholder="Describe symptoms or upload a photo..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 text-white outline-none">
                         <button type="submit" class="p-4 bg-cyan-600 text-white rounded-full hover:bg-cyan-500 transition-all"><i data-lucide="send" class="w-5 h-5"></i></button>
                     </form>
                 </div>
@@ -87,17 +118,41 @@
         const API_KEY = "AIzaSyBIRMUw-uw3KnJl25ARHqZMso3KUKUCum8"; 
         const genAI = new GoogleGenerativeAI(API_KEY);
         let messages = [];
+        let attachedImageBase64 = null;
 
         window.launchApp = () => {
             document.getElementById('home-view').classList.add('hidden-view');
             document.getElementById('app-view').classList.remove('hidden-view');
             document.getElementById('app-view').style.display = 'flex';
-            messages.push({ role: 'assistant', text: "### Hello\nI am MedBot. How can I help you with your health today?" });
+            messages.push({ role: 'assistant', text: "### Welcome\nI am MedBot. Please tell me about your symptoms or upload a photo for a quick health analysis." });
             renderMessages();
             lucide.createIcons();
         };
 
         window.toggleMenu = () => document.getElementById('sidebar').classList.toggle('open');
+        window.setTab = (view) => {
+            document.getElementById('view-context').classList.toggle('hidden', view !== 'context');
+            document.getElementById('view-profile').classList.toggle('hidden', view !== 'profile');
+            document.getElementById('tab-context').className = view === 'context' ? "flex-1 py-2 text-[10px] font-bold uppercase rounded-lg bg-cyan-600" : "flex-1 py-2 text-[10px] font-bold uppercase rounded-lg text-slate-500";
+            document.getElementById('tab-profile').className = view === 'profile' ? "flex-1 py-2 text-[10px] font-bold uppercase rounded-lg bg-cyan-600" : "flex-1 py-2 text-[10px] font-bold uppercase rounded-lg text-slate-500 ml-1";
+        };
+
+        window.handleImage = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                attachedImageBase64 = reader.result;
+                document.getElementById('image-preview').src = reader.result;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearImage = () => {
+            attachedImageBase64 = null;
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('file-input').value = '';
+        };
 
         const renderMessages = () => {
             const container = document.getElementById('chat-container');
@@ -111,19 +166,23 @@
             container.scrollTop = container.scrollHeight;
         };
 
-        async function callGemini(prompt) {
+        async function callGemini(prompt, img) {
             const model = genAI.getGenerativeModel({ 
                 model: "gemini-flash-latest",
-                systemInstruction: `You are MedBot. 
-                FORMATTING RULES:
-                1. Use '### ASSESSMENT' for the main analysis.
-                2. Use '### SUGGESTED STEPS' for bullet points of what to do.
-                3. Use '### PRECAUTIONS' for things to watch out for.
-                4. Wrap your medical disclaimer at the very end in a separate paragraph.
-                Keep sentences short and professional.`
+                systemInstruction: `You are MedBot. Structure:
+                ### ASSESSMENT (Summary of findings)
+                ### SUGGESTED STEPS (Numbered actions)
+                ### PRECAUTIONS (Warnings)
+                Keep it clinical, formatted, and always end with a disclaimer.`
             });
             const hist = document.getElementById('medical-history').value;
-            const result = await model.generateContent(`History: ${hist}\nUser: ${prompt}`);
+            const user = document.getElementById('p-name').value;
+            const content = `User: ${user}\nHistory: ${hist}\nPrompt: ${prompt}`;
+            
+            const parts = [{ text: content }];
+            if (img) parts.push({ inlineData: { mimeType: "image/png", data: img.split(',')[1] } });
+
+            const result = await model.generateContent({ contents: [{ role: 'user', parts }] });
             return result.response.text();
         }
 
@@ -131,19 +190,28 @@
             e.preventDefault();
             const input = document.getElementById('user-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text && !attachedImageBase64) return;
 
-            messages.push({ role: 'user', text: text });
-            input.value = '';
+            messages.push({ role: 'user', text: text || "[Sent a photo]" });
+            const currentImg = attachedImageBase64;
+            input.value = ''; clearImage();
             renderMessages();
 
+            document.getElementById('status-text').innerText = "Analyzing...";
             try {
-                const res = await callGemini(text);
+                const res = await callGemini(text || "Analyze this photo.", currentImg);
                 messages.push({ role: 'assistant', text: res });
             } catch (err) {
-                messages.push({ role: 'assistant', text: "### Error\nConnection failed. Please check your key." });
+                messages.push({ role: 'assistant', text: "### Connection Error\nPlease check your API key." });
             }
+            document.getElementById('status-text').innerText = "Ready to assist";
             renderMessages();
+        };
+
+        window.findHospital = () => {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                window.open(`https://www.google.com/maps/search/hospitals/@${pos.coords.latitude},${pos.coords.longitude},14z`);
+            });
         };
 
         document.getElementById('launch-btn').onclick = window.launchApp;

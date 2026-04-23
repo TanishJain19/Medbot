@@ -143,11 +143,11 @@
     </div>
 
     <div id="toast-container" class="fixed bottom-24 right-6 z-[200] flex flex-col gap-2"></div>
-
+    <script src="config.js"></script>
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        const API_KEY = ""; 
+        const API_KEY = CONFIG.API_KEY; 
         
         const genAI = new GoogleGenerativeAI(API_KEY);
         let messages = [];

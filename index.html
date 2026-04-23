@@ -143,11 +143,14 @@
     </div>
 
     <div id="toast-container" class="fixed bottom-24 right-6 z-[200] flex flex-col gap-2"></div>
-    
+
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        const API_KEY = AIzaSyBVWSXpZwof1c7YG8Pkl6i7l4ajYSM3qco; 
+        // VERCEL COMPATIBLE API KEY SETUP
+        // Locally, replace "PASTE_YOUR_KEY_HERE" with your key.
+        // On Vercel, this can be linked via an env variable if using a build step.
+        const API_KEY = "AIzaSyBVWSXpZwof1c7YG8Pkl6i7l4ajYSM3qco"; 
         
         const genAI = new GoogleGenerativeAI(API_KEY);
         let messages = [];
@@ -249,7 +252,7 @@
 
         async function callGemini(prompt, img) {
             const model = genAI.getGenerativeModel({ 
-                model: "gemini-flash-latest",
+                model: "gemini-1.5-flash",
                 systemInstruction: "You are MedBot. Provide Assessment, Suggested Steps, and Precautions. Be clinical yet friendly. Use short sentences. Always include a legal disclaimer at the very end."
             });
             const hist = document.getElementById('medical-history').value;
